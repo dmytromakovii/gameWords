@@ -31,34 +31,45 @@ for (i = 0; i < word.length; i++) {
 //оставшиеся буквы
 var remainingLetters = word.length;
 
+//попытки 
+var tryNumbers = 10;
+
 //цикл игры
-while (remainingLetters > 0) {
+while (remainingLetters > 0 && tryNumbers > 0) {
 
     //текущее состояние игры
-    alert(answerArray.join(" "));
+    alert(answerArray.join(" ") + ". You can try " + tryNumbers + " times");
 
-    //запрашиваем ответ
+    //запрашиваем ответ и придаём нижний регистр
     var answer = prompt("Enter the letter or Cancel the game");
 
     //в случае отмены
     if (answer === null) {
         break;
-
         //проверка на количество символов
     } else if (answer.length !== 1) {
         alert("Enter just 1 letter")
     }
     //обновление игры
     else {
+        tryNumbers--;
+        answer = answer.toLowerCase();
         for (j = 0; j < word.length; j++) {
-            if (word[j] === answer) {
+            if (word[j] === answer && answerArray[j] === "_") {
                 answerArray[j] = answer;
                 remainingLetters--;
             }
         }
     }
-    //конец цикла игры
 
+    //конец цикла игры
 }
 //отображение слова
-alert("the word is " + answerArray.join);
+if (tryNumbers === 0) {
+    alert("You can't try anymore");
+}
+if (answer !== null) {
+    alert("The word is " + answerArray.join(" "));
+} else {
+    alert("you stopped the game");
+}
