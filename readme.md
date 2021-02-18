@@ -1,2 +1,2 @@
-#"Guess the word" game. 
-##Created in JS
+# "Guess the word" game. 
+## Created in JS
