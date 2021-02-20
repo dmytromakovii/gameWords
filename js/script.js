@@ -14,60 +14,86 @@
  ОБНОВИТЬ состояние игры, подставив новую букву 
  ПОЗДРАВИТЬ игрока с победой — слово угадано */
 
-//массив слов
-var words = ['fish', 'cow', 'tiger', 'dog', 'cat'];
 
-//выбор случайного слова
-var word = words[Math.floor(Math.random() * words.length)];
+var pickWord = function() {
+    // Возвращает случайно выбранное слово
+    var words = ['fish', 'cow', 'tiger', 'dog', 'cat'];
+    return words[Math.floor(Math.random() * words.length)];
+};
 
-//создание массива с ответом
-var answerArray = [];
-for (i = 0; i < word.length; i++) {
-    answerArray[i] = "_";
-}
-
-//оставшиеся буквы
-var remainingLetters = word.length;
-
-//попытки 
-var tryNumbers = 10;
-
-//цикл игры
-while (remainingLetters > 0 && tryNumbers > 0) {
-
-    //текущее состояние игры
-    alert(answerArray.join(" ") + ". You can try " + tryNumbers + " times");
-
-    //запрашиваем ответ и придаём нижний регистр
-    var answer = prompt("Enter the letter or Cancel the game");
-
-    //в случае отмены
-    if (answer === null) {
-        break;
-        //проверка на количество символов
-    } else if (answer.length !== 1) {
-        alert("Enter just 1 letter")
+var setupAnswerArray = function(word) {
+    // Возвращает итоговый массив для заданного слова word
+    var answerArray = [];
+    for (i = 0; i < word.length; i++) {
+        answerArray[i] = "_";
     }
-    //обновление игры
-    else {
-        tryNumbers--;
-        answer = answer.toLowerCase();
-        for (j = 0; j < word.length; j++) {
-            if (word[j] === answer && answerArray[j] === "_") {
-                answerArray[j] = answer;
-                remainingLetters--;
-            }
+    return answerArray;
+};
+
+var showPlayerProgress = function(answerArray) {
+    // С помощью alert отображает текущее состояние игры
+    alert(answerArray.join(" ") + ". You can try " + tryNumbers + " times");
+};
+
+var getGuess = function() {
+    // Запрашивает ответ игрока с помощью prompt
+    return prompt("Enter the letter or Cancel the game");
+};
+
+var updateGameState = function(guess, word, answerArray) {
+    // Обновляет answerArray согласно ответу игрока (guess)
+    // возвращает число, обозначающее, сколько раз буква guess
+    // встречается в слове, чтобы можно было обновить значение
+    // remainingLetters
+    tryNumbers--;
+    var howManyTimeAppear = 0;
+    guess = guess.toLowerCase();
+    for (j = 0; j < word.length; j++) {
+        if (word[j] === guess && answerArray[j] === "_") {
+            answerArray[j] = guess;
+            remainingLetters--;
+            howManyTimeAppear++;
         }
     }
+    return howManyTimeAppear
+};
 
-    //конец цикла игры
+var showAnswerAndCongratulatePlayer = function(answerArray) {
+    // С помощью alert показывает игроку отгаданное слово
+    // и поздравляет его с победой
+    if (tryNumbers === 0) {
+        alert("You can't try anymore");
+    }
+    if (guess !== null) {
+        alert("The word is " + answerArray.join(" "));
+    } else {
+        alert("you stopped the game");
+    }
+};
+
+//выбор слова из массива
+var word = pickWord();
+
+// answerArray: итоговый массив
+var answerArray = setupAnswerArray(word);
+
+// remainingLetters: сколько букв осталось угадать
+var tryNumbers = 10;
+var remainingLetters = word.length;
+while (remainingLetters > 0 && tryNumbers > 0) {
+    showPlayerProgress(answerArray);
+
+    // guess: ответ игрока
+    var guess = getGuess();
+    if (guess === null) {
+        break;
+    } else if (guess.length !== 1) {
+        alert("Пожалуйста, введите одиночную букву.");
+    } else {
+        // correctGuesses: количество открытых букв
+        var correctGuesses = updateGameState(guess, word,
+            answerArray);
+        remainingLetters -= correctGuesses;
+    }
 }
-//отображение слова
-if (tryNumbers === 0) {
-    alert("You can't try anymore");
-}
-if (answer !== null) {
-    alert("The word is " + answerArray.join(" "));
-} else {
-    alert("you stopped the game");
-}
+showAnswerAndCongratulatePlayer(answerArray);
